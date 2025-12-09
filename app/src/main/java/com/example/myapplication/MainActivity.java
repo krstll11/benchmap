@@ -23,7 +23,7 @@ import com.yandex.mapkit.mapview.MapView;
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private Button locationButton;
-    private final String API_KEY = "d30b5896-7886-4bc6-8ccf-5ea9b460882e";
+    private final String API_KEY = "";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private com.yandex.mapkit.location.LocationManager locationManager;
