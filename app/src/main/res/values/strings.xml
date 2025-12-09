@@ -1,3 +1,45 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Locations App</string>
+
+    <!-- Авторизация -->
+    <string name="login">Войти</string>
+    <string name="logout">Выйти</string>
+    <string name="register">Регистрация</string>
+    <string name="username">Имя пользователя</string>
+    <string name="password">Пароль</string>
+
+    <!-- Места -->
+    <string name="add_location">Добавить место</string>
+    <string name="my_locations">Мои места</string>
+    <string name="current_location">Мое местоположение</string>
+    <string name="location_name">Название места</string>
+    <string name="description">Описание</string>
+    <string name="address">Адрес</string>
+    <string name="type">Тип</string>
+    <string name="status">Статус</string>
+
+    <!-- Кнопки -->
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="delete">Удалить</string>
+    <string name="close">Закрыть</string>
+
+    <!-- Отзывы -->
+    <string name="add_review">Добавить отзыв</string>
+    <string name="rating">Оценка</string>
+    <string name="pollution_level">Уровень загрязнения</string>
+    <string name="condition">Состояние</string>
+    <string name="material">Материал</string>
+    <string name="seating_positions">Количество мест</string>
+
+    <!-- Сообщения -->
+    <string name="no_reviews">Нет отзывов</string>
+    <string name="loading">Загрузка...</string>
+    <string name="error">Ошибка</string>
+    <string name="success">Успешно</string>
+
+    <!-- Диалоги -->
+    <string name="confirm_delete">Вы уверены, что хотите удалить это место?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

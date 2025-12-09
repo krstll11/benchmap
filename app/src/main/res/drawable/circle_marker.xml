@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <!-- Цвет круга (например, фиолетовый) -->
+    <solid android:color="#6200EE" />
+
+    <!-- Размер иконки -->
+    <size
+        android:width="20dp"
+        android:height="20dp" />
+
+    <!-- Белая обводка -->
+    <stroke
+        android:width="2dp"
+        android:color="#FFFFFF" />
+</shape>

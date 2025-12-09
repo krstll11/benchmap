@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Типы мест -->
+    <string-array name="location_types">
+        <item>Скамейка</item>
+        <item>Парк</item>
+        <item>Смотровая площадка</item>
+        <item>Беседка</item>
+        <item>Пикниковая зона</item>
+        <item>Другое</item>
+    </string-array>
+
+    <!-- Статусы -->
+    <string-array name="location_statuses">
+        <item>Активно</item>
+        <item>На ремонте</item>
+        <item>Удалено</item>
+        <item>Временно недоступно</item>
+    </string-array>
+
+    <!-- Уровень загрязнения -->
+    <string-array name="pollution_levels">
+        <item>Очень чистый</item>
+        <item>Чистый</item>
+        <item>Средний</item>
+        <item>Загрязненный</item>
+        <item>Очень загрязненный</item>
+    </string-array>
+
+    <!-- Состояние -->
+    <string-array name="condition_levels">
+        <item>Отличное</item>
+        <item>Хорошее</item>
+        <item>Среднее</item>
+        <item>Плохое</item>
+        <item>Очень плохое</item>
+    </string-array>
+
+    <!-- Материалы -->
+    <string-array name="material_types">
+        <item>Дерево</item>
+        <item>Металл</item>
+        <item>Пластик</item>
+        <item>Камень</item>
+        <item>Смешанный</item>
+    </string-array>
+
+    <!-- Количество сидячих мест -->
+    <string-array name="seating_positions">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5+</item>
+    </string-array>
+</resources>
