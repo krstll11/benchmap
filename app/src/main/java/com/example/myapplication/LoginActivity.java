@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,9 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         buttonLogin.setEnabled(false);
 
-        // Отправляем как FORM DATA
         Call<AuthResponse> call = apiService.login(username, password);
-
         call.enqueue(new Callback<AuthResponse>() {
             @Override
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
@@ -69,27 +68,14 @@ public class LoginActivity extends AppCompatActivity {
                     String token = authResponse.getAccessToken();
 
                     if (token != null && !token.isEmpty()) {
-                        // Сохраняем токен
                         prefsManager.saveAuthToken(token);
-
-                        // Получаем информацию о пользователе
+                        // После получения токена идем за ID пользователя
                         getUserInfo("Bearer " + token);
                     } else {
-                        Toast.makeText(LoginActivity.this,
-                                "Ошибка: токен не получен", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Ошибка: токен пуст", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    String errorMessage = "Ошибка авторизации";
-                    if (response.errorBody() != null) {
-                        try {
-                            errorMessage = response.errorBody().string();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    Toast.makeText(LoginActivity.this,
-                            errorMessage + " (Код: " + response.code() + ")",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Ошибка авторизации", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -97,54 +83,32 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Call<AuthResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 buttonLogin.setEnabled(true);
-                Toast.makeText(LoginActivity.this,
-                        "Ошибка сети: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                t.printStackTrace();
+                Toast.makeText(LoginActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void getUserInfo(String token) {
-        Call<User> call = apiService.getCurrentUser(token);
-
-        call.enqueue(new Callback<User>() {
+        apiService.getCurrentUser(token).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     User user = response.body();
 
-                    // Сохраняем информацию о пользователе
-                    prefsManager.saveUserInfo(
-                            user.getId(),
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getRoleId()
-                    );
+                    // СОХРАНЯЕМ ID через менеджер
+                    prefsManager.saveUserId(user.getId());
 
-                    // Возвращаемся в MainActivity
-                    Intent resultIntent = new Intent();
-                    setResult(RESULT_OK, resultIntent);
+                    Log.d("DEBUG_LOGIN", "ID сохранен: " + user.getId());
+
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
                     finish();
-                } else {
-                    String errorMessage = "Ошибка получения данных пользователя";
-                    if (response.errorBody() != null) {
-                        try {
-                            errorMessage = response.errorBody().string();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    Toast.makeText(LoginActivity.this,
-                            errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(LoginActivity.this,
-                        "Ошибка сети при получении данных пользователя",
-                        Toast.LENGTH_SHORT).show();
-                t.printStackTrace();
+                Toast.makeText(LoginActivity.this, "Ошибка получения данных", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -6,19 +6,22 @@ public class Picture {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("url")
-    private String url;
+    @SerializedName("location_id")
+    private int locationId;
 
-    @SerializedName("description")
-    private String description;
+    // ВАЖНО: Это имя "file_path" должно совпадать с тем, что присылает ваш Python-сервер
+    @SerializedName("file_path")
+    private String filePath;
 
-    // Getters and setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getFilePath() {
+        return filePath;
+    }
 
-    public String getUrl() { return url; }
-    public void setUrl(String url) { this.url = url; }
+    public int getId() {
+        return id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public int getLocationId() {
+        return locationId;
+    }
 }

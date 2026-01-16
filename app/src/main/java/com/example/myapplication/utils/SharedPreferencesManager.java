@@ -2,6 +2,9 @@ package com.example.myapplication.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Base64;
+import android.util.Log;
+import org.json.JSONObject;
 
 public class SharedPreferencesManager {
     private static final String PREFS_NAME = "auth_prefs";
@@ -26,6 +29,12 @@ public class SharedPreferencesManager {
 
     public String getAuthToken() {
         return prefs.getString(KEY_ACCESS_TOKEN, null);
+    }
+
+    // Добавил этот метод отдельно, чтобы LoginActivity мог сохранять только ID
+    public void saveUserId(int userId) {
+        editor.putInt(KEY_USER_ID, userId);
+        editor.apply();
     }
 
     public void saveUserInfo(int userId, String username, String email, int roleId) {
@@ -59,5 +68,33 @@ public class SharedPreferencesManager {
     public void clear() {
         editor.clear();
         editor.apply();
+    }
+
+    // Ваш метод декодирования токена (оставлен без изменений)
+    public int getUserIdFromToken() {
+        String token = getAuthToken();
+        if (token == null || token.isEmpty()) {
+            return -1;
+        }
+
+        try {
+            String[] split = token.split("\\.");
+            if (split.length < 2) return -1;
+
+            String body = new String(Base64.decode(split[1], Base64.URL_SAFE));
+            JSONObject json = new JSONObject(body);
+
+            if (json.has("sub")) {
+                try {
+                    return Integer.parseInt(json.getString("sub"));
+                } catch (NumberFormatException e) {
+                    if (json.has("id")) return json.getInt("id");
+                    if (json.has("user_id")) return json.getInt("user_id");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("JWT_DECODE", "Ошибка декодирования токена", e);
+        }
+        return -1;
     }
 }

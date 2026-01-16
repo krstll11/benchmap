@@ -85,6 +85,16 @@ public interface ApiService {
                                 @Query("location_id") int locationId,
                                 @Part MultipartBody.Part file
     );
+    @DELETE("reviews/{id}")
+    Call<okhttp3.ResponseBody> deleteReview(
+            @Header("Authorization") String token,
+            @Path("id") int reviewId
+    );
+    @GET("pictures/locations/{location_id}")
+    Call<List<Picture>> getLocationPictures(
+            @Header("Authorization") String token,
+            @Path("location_id") int locationId
+    );
 
     @GET("locations/") // Путь к вашему эндпоинту locations_router
     Call<List<LocationSeat>> getLocations(

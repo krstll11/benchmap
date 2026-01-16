@@ -63,11 +63,10 @@ public class MainActivity extends AppCompatActivity {
     private Button myLocationsButton;
     private Button loginButton;
 
-    // Временная метка (когда ставим точку для нового места)
+
     private PlacemarkMapObject temporaryMarker;
 
-    private final String API_KEY = "b8cd571c-0d98-4f34-bba7-9df9644e9bfc"; // ВСТАВЬТЕ СЮДА ВАШ КЛЮЧ
-
+    private final String API_KEY = "94ac0fbb-0ad5-4441-a1cc-3fa24a521915";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private static final int ADD_MARKER_REQUEST = 101;
     private static final int LOGIN_REQUEST = 102;
@@ -75,19 +74,19 @@ public class MainActivity extends AppCompatActivity {
     private MapObjectCollection mapObjects;
     private Point selectedPoint;
 
-    // Для работы с API
+
     private ApiService apiService;
     private SharedPreferencesManager prefsManager;
     private Handler handler = new Handler(Looper.getMainLooper());
 
-    // --- НОВОЕ: Слушатель камеры для подгрузки меток ---
+    //Слушатель камеры для подгрузки меток ---
     private final CameraListener cameraListener = new CameraListener() {
         @Override
         public void onCameraPositionChanged(@NonNull Map map,
                                             @NonNull CameraPosition cameraPosition,
                                             @NonNull CameraUpdateReason cameraUpdateReason,
                                             boolean finished) {
-            // Загружаем метки только когда камера остановилась
+
             if (finished) {
                 loadMarkersInVisibleRegion();
             }
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private final com.yandex.mapkit.map.InputListener mapInputListener = new com.yandex.mapkit.map.InputListener() {
         @Override
         public void onMapTap(@NonNull com.yandex.mapkit.map.Map map, @NonNull Point point) {
-            // При обычном тапе можно сбрасывать выделение
+
             if (selectedPoint != null) {
                 removeAllTemporaryMarkers();
                 selectedPoint = null;
@@ -116,30 +115,31 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // 1. СНАЧАЛА Инициализация MapKit (ОБЯЗАТЕЛЬНО до setContentView)
+
         try {
             MapKitFactory.setApiKey(API_KEY);
             MapKitFactory.initialize(this);
         } catch (Exception e) {
             Log.e("MAPKIT", "Ошибка инициализации MapKit", e);
-            // Если MapKit не завелся, нет смысла продолжать, приложение упадет дальше
+            // Если MapKit не завелся,приложение упадет дальше
             finish();
             return;
         }
 
         super.onCreate(savedInstanceState);
 
-        // 2. Теперь загружаем Layout
+
         setContentView(R.layout.activity_main);
 
-        // 3. Инициализация View и Сервисов
+
+
         try {
             mapView = findViewById(R.id.mapview);
             locationButton = findViewById(R.id.locationButton);
             myLocationsButton = findViewById(R.id.myLocationsButton);
             loginButton = findViewById(R.id.loginButton);
 
-            // Проверка, что View найдены
+
             if (mapView == null) {
                 Log.e("INIT", "MapView not found!");
                 return;
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // 4. Настройка логики (ТОЛЬКО ПОСЛЕ того, как mapView найден)
+
         setupMap();
         setupButtons();
         setupMapLongTapListener();
@@ -168,10 +168,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupMap() {
-        // Сначала добавляем слушатель
+        // слушатель
         mapView.getMap().addCameraListener(cameraListener);
 
-        // Двигаем камеру (Москва). Animation.Type.SMOOTH вызовет событие "finished" в конце
+        // Двигаем камеру (Москва)
         mapView.getMap().move(
                 new CameraPosition(new Point(55.751574, 37.573856), 14.0f, 0.0f, 0.0f),
                 new Animation(Animation.Type.SMOOTH, 1f), // Анимация 1 сек
@@ -180,12 +180,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // --- НОВОЕ: Основной метод загрузки меток для видимой области ---
+    // метод загрузки меток для видимой области
     private void loadMarkersInVisibleRegion() {
-        // Если пользователь ставит точку, не обновляем карту, чтобы не сбить процесс
+        // пользователь ставит точку, не обновляем карту, чтобы не сбить процесс
         if (selectedPoint != null) return;
 
-        // Проверяем, готова ли карта
+        // готова ли карта???
         if (mapView == null || mapView.getMap() == null) return;
 
         VisibleRegion region = mapView.getMap().getVisibleRegion();
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         double minLon = Math.min(region.getBottomLeft().getLongitude(), region.getTopLeft().getLongitude());
         double maxLon = Math.max(region.getBottomRight().getLongitude(), region.getTopRight().getLongitude());
 
-        // ЛОГИРОВАНИЕ: Смотрим в Logcat, какие координаты уходят
+        // ЛОГИРОВАНИЕ: какие координаты уходят
         Log.d("MAP_DEBUG", String.format("Запрос меток: lat[%.4f - %.4f], lon[%.4f - %.4f]", minLat, maxLat, minLon, maxLon));
 
         Call<List<LocationSeat>> call = apiService.getLocations(
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                     List<LocationSeat> locations = response.body();
                     Log.d("MAP_DEBUG", "Пришло меток с сервера: " + locations.size());
 
-                    // Очищаем и рисуем заново
+
                     removeAllMarkersExceptTemporary();
 
                     for (LocationSeat loc : locations) {
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.e("MAP_ERROR", "Ошибка сервера: " + response.code());
-                    // Попробуйте прочитать тело ошибки для отладки
+
                     try {
                         if(response.errorBody() != null) Log.e("MAP_ERROR", response.errorBody().string());
                     } catch (Exception e) {}
@@ -238,14 +238,12 @@ public class MainActivity extends AppCompatActivity {
         Point point = new Point(location.getCordX(), location.getCordY());
         PlacemarkMapObject marker = mapObjects.addPlacemark(point);
 
-        // --- ИЗМЕНЕНИЕ: Используем векторную иконку (круглую) ---
-        // Если хотите разные иконки для типов, можно сделать switch внутри
-        // Но для "круглого значка" используем R.drawable.circle_marker
+
         Bitmap iconBitmap = createBitmapFromVector(R.drawable.circle_marker);
         if (iconBitmap != null) {
             marker.setIcon(ImageProvider.fromBitmap(iconBitmap));
         } else {
-            // Фолбек на старый метод, если битмап не создался
+
             marker.setIcon(ImageProvider.fromResource(this, R.drawable.ic_marker_default));
         }
 
@@ -258,16 +256,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // --- НОВОЕ: Конвертация XML (vector) в Bitmap для MapKit ---
+    // Конвертация XML (vector) в Bitmap для MapKit
     private Bitmap createBitmapFromVector(int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(this, vectorResId);
         if (vectorDrawable == null) return null;
 
-        // Проверка размеров, чтобы не было краша
+
         int width = vectorDrawable.getIntrinsicWidth();
         int height = vectorDrawable.getIntrinsicHeight();
 
-        // Если размеры не определились (например, 0 или -1), ставим дефолтные
+
         if (width <= 0) width = 48;
         if (height <= 0) height = 48;
 
@@ -282,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         if (temporaryMarker != null) {
             Point tempPoint = temporaryMarker.getGeometry();
             mapObjects.clear();
-            // Восстанавливаем временную метку
+
             temporaryMarker = mapObjects.addPlacemark(tempPoint);
             temporaryMarker.setIcon(ImageProvider.fromResource(this, R.drawable.ic_marker_temp)); // Убедитесь что этот ресурс есть
             temporaryMarker.setOpacity(0.7f);
@@ -292,9 +290,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ---------------------------------------------------------
-    // ОСТАЛЬНОЙ КОД БЕЗ ИЗМЕНЕНИЙ (Кнопки, Логика создания и т.д.)
-    // ---------------------------------------------------------
+
 
     private void setupButtons() {
         locationButton.setOnClickListener(v -> {
@@ -310,8 +306,7 @@ public class MainActivity extends AppCompatActivity {
 
         myLocationsButton.setOnClickListener(v -> {
             if (prefsManager.isLoggedIn()) {
-                // При просмотре "Моих мест" можно временно отключить автозагрузку
-                // Но для простоты оставим как есть, или загрузим и подвинем камеру
+
                 loadMyLocations();
             } else {
                 Toast.makeText(this, "Войдите в систему", Toast.LENGTH_SHORT).show();
@@ -328,15 +323,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setupMapLongTapListener() {
-        // ВАЖНО: Передаем нашу переменную mapInputListener, а не создаем новую через new!
+
         mapView.getMap().addInputListener(mapInputListener);
     }
 
     private void showTemporaryMarker(Point point) {
-        removeAllTemporaryMarkers(); // Сначала удалим старую
+        removeAllTemporaryMarkers();
         temporaryMarker = mapObjects.addPlacemark(point);
 
-        // Тут можно использовать отдельную иконку для "Новой точки"
+
         temporaryMarker.setIcon(ImageProvider.fromResource(this, R.drawable.ic_marker_temp));
         temporaryMarker.setOpacity(0.7f);
         temporaryMarker.setUserData("TEMP_MARKER");
@@ -344,10 +339,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void removeAllTemporaryMarkers() {
         if (temporaryMarker != null) {
-            // Пытаемся удалить конкретный объект из коллекции
+
             try {
-                // В MapKit иногда сложно удалить один объект, если коллекция была очищена
-                // Но метод isValid проверяет, жив ли объект
+
                 if (temporaryMarker.isValid()) {
                     mapObjects.remove(temporaryMarker);
                 }
@@ -374,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                     prefsManager.clear();
                     checkAuthStatus();
                     Toast.makeText(this, "Вы вышли", Toast.LENGTH_SHORT).show();
-                    loadMarkersInVisibleRegion(); // Перезагрузить общую карту
+                    loadMarkersInVisibleRegion();
                 })
                 .setNegativeButton("Нет", null)
                 .show();
@@ -419,11 +413,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == ADD_MARKER_REQUEST) {
             if (resultCode == RESULT_OK && data != null) {
-                // Данные пришли - создаем на сервере
+
                 double lat = data.getDoubleExtra("latitude", 0);
                 double lon = data.getDoubleExtra("longitude", 0);
                 String name = data.getStringExtra("name");
-                // ... сбор остальных полей ...
+
                 String desc = data.getStringExtra("description");
                 String addr = data.getStringExtra("address");
                 int type = data.getIntExtra("type", 1);
@@ -445,11 +439,11 @@ public class MainActivity extends AppCompatActivity {
 
                 createLocationOnServer(lat, lon, name, desc, addr, type, status, review, imageUri);
             }
-            // В любом случае (успех или отмена) убираем временный маркер и сбрасываем точку
+
             removeAllTemporaryMarkers();
             selectedPoint = null;
 
-            // Можно обновить карту
+
             loadMarkersInVisibleRegion();
         }
     }
@@ -473,12 +467,12 @@ public class MainActivity extends AppCompatActivity {
 
                     Toast.makeText(MainActivity.this, "Место добавлено!", Toast.LENGTH_SHORT).show();
 
-                    // 1. Добавляем метку на карту
+
                     addMarkerToMap(createdLocation);
 
-                    // 2. ЕСЛИ была выбрана картинка, начинаем загрузку
+
                     if (imageUri != null) {
-                        // Запускаем загрузку, используя ID только что созданного места
+
                         uploadImageToServer(createdLocation.getId(), imageUri, token);
                     }
 
@@ -495,15 +489,14 @@ public class MainActivity extends AppCompatActivity {
     // Метод загрузки картинки
     private void uploadImageToServer(int locationId, Uri imageUri, String token) {
         try {
-            // 1. Превращаем URI в реальный файл во временной папке (кэше)
-            // Это нужно, так как Android не дает прямого доступа к файлам галереи
+
             File file = createTempFileFromUri(imageUri);
 
-            // 2. Готовим тело запроса для Retrofit
+
             RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
-            // 3. Отправляем
+
             apiService.uploadPicture("Bearer " + token, locationId, body).enqueue(new Callback<Object>() {
                 @Override
                 public void onResponse(Call<Object> call, Response<Object> response) {
@@ -526,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Вспомогательный метод для копирования файла из галереи в кэш приложения
+
     private File createTempFileFromUri(Uri uri) throws java.io.IOException {
         InputStream inputStream = getContentResolver().openInputStream(uri);
         File tempFile = new File(getCacheDir(), "upload_image_" + System.currentTimeMillis() + ".jpg");
@@ -544,101 +537,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showLocationInfoDialog(LocationSeat location) {
-        // 1. Создаем билдер диалога
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        // Мы создаем экземпляр ВАШЕГО НОВОГО КЛАССА
+        LocationInfoDialog dialog = new LocationInfoDialog(
+                MainActivity.this,           // Context
+                location,                    // Объект места
+                apiService,                  // Retrofit сервис
+                prefsManager,                // Менеджер настроек
+                new LocationInfoDialog.OnActionListener() { // Слушатель событий
+                    @Override
+                    public void onLocationDeleted() {
+                        // Если удалили - обновляем карту
+                        loadMarkersInVisibleRegion();
+                    }
 
-        // 2. Надуваем (Inflate) наш кастомный XML
-        View view = getLayoutInflater().inflate(R.layout.dialog_location_info, null);
-        builder.setView(view); // Устанавливаем этот View в диалог
+                    @Override
+                    public void onAddReviewClick(LocationSeat loc) {
+                        // Если нажали "Отзыв" - открываем окно отзыва
+                        showAddReviewDialog(loc);
+                    }
+                }
+        );
 
-        // 3. Создаем диалог (но пока не показываем)
-        android.app.AlertDialog dialog = builder.create();
-
-        // --- ПРИВЯЗКА ДАННЫХ (BINDING) ---
-
-        TextView tvName = view.findViewById(R.id.tvName);
-        TextView tvDescription = view.findViewById(R.id.tvDescription);
-        TextView tvAddress = view.findViewById(R.id.tvAddress);
-        TextView tvType = view.findViewById(R.id.tvType);
-        TextView tvStatus = view.findViewById(R.id.tvStatus);
-        LinearLayout reviewsContainer = view.findViewById(R.id.reviewsContainer);
-        Button btnDelete = view.findViewById(R.id.btnDelete);
-        Button btnClose = view.findViewById(R.id.btnClose);
-
-        // Заполняем тексты
-        tvName.setText(location.getName());
-        tvDescription.setText(location.getDescription() != null && !location.getDescription().isEmpty()
-                ? location.getDescription() : "Описание отсутствует");
-        tvAddress.setText("Адрес: " + (location.getAddress() != null ? location.getAddress() : "Не указан"));
-
-        // Преобразуем ID типа и статуса в текст (вспомогательные методы ниже)
-        tvType.setText("Тип: " + getTypeName(location.getType()));
-        tvStatus.setText("Статус: " + getStatusName(location.getStatus()));
-
-        // --- ЛОГИКА ОТЗЫВОВ ---
-        // Очищаем контейнер перед добавлением (на случай переиспользования)
-        reviewsContainer.removeAllViews();
-
-        if (location.getReviews() != null && !location.getReviews().isEmpty()) {
-            for (Review review : location.getReviews()) {
-                // Создаем TextView для каждого отзыва программно
-                TextView reviewView = new TextView(this);
-                // Формируем текст отзыва (например: Оценка и Комментарий)
-                String reviewText = "⭐ " + review.getRate();
-                // Если есть текст отзыва, добавляем его (зависит от вашей модели Review)
-                // reviewText += "\n" + review.getComment();
-
-                reviewView.setText(reviewText);
-                reviewView.setTextSize(14f);
-                reviewView.setPadding(0, 8, 0, 8);
-
-                reviewsContainer.addView(reviewView);
-
-                // Добавляем разделитель (полоску)
-                View divider = new View(this);
-                divider.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 1));
-                divider.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                reviewsContainer.addView(divider);
-            }
-        } else {
-            TextView noReviews = new TextView(this);
-            noReviews.setText("Отзывов пока нет");
-            noReviews.setPadding(0, 10, 0, 10);
-            reviewsContainer.addView(noReviews);
-        }
-
-        // --- ЛОГИКА КНОПКИ УДАЛИТЬ ---
-        // Проверяем, является ли текущий пользователь автором метки
-        int currentUserId = prefsManager.getUserId(); // Убедитесь, что в prefsManager есть этот метод
-        if (currentUserId == location.getAuthorId()) {
-            btnDelete.setVisibility(View.VISIBLE);
-            btnDelete.setOnClickListener(v -> {
-                // Логика удаления (нужен отдельный метод)
-                deleteLocation(location.getId(), dialog);
-            });
-        } else {
-            btnDelete.setVisibility(View.GONE);
-        }
-
-        // Кнопка Закрыть
-        btnClose.setOnClickListener(v -> dialog.dismiss());
-
-        // Прозрачный фон диалога, чтобы углы были скругленные (если в XML корневой layout с фоном)
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
-        Button btnAddReview = view.findViewById(R.id.btnAddReview);
-        if (prefsManager.isLoggedIn()) {
-            btnAddReview.setVisibility(View.VISIBLE);
-            btnAddReview.setOnClickListener(v -> {
-                dialog.dismiss(); // Закрываем окно деталей
-                showAddReviewDialog(location); // Открываем окно добавления отзыва
-            });
-        } else {
-            btnAddReview.setVisibility(View.GONE); // Скрываем, если не авторизован
-        }
-
+        // Показываем диалог
         dialog.show();
     }
 
@@ -650,16 +570,16 @@ public class MainActivity extends AppCompatActivity {
         android.app.AlertDialog dialog = builder.create();
         if (dialog.getWindow() != null) dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        // Находим Views
+
         RatingBar ratingBar = view.findViewById(R.id.ratingBarNew);
         Spinner spPollution = view.findViewById(R.id.spinnerPollution);
         Spinner spCondition = view.findViewById(R.id.spinnerCondition);
         Spinner spMaterial = view.findViewById(R.id.spinnerMaterial);
         Spinner spSeating = view.findViewById(R.id.spinnerSeating);
-        EditText etComment = view.findViewById(R.id.etComment); // Если есть в API
+        EditText etComment = view.findViewById(R.id.etComment);
         Button btnSend = view.findViewById(R.id.btnSendReview);
 
-        // Настройка спиннеров (данные как в AddMarkerActivity)
+
         setupSpinner(spPollution, new String[]{"Нет данных", "Чисто", "Немного мусора", "Грязно"});
         setupSpinner(spCondition, new String[]{"Нет данных", "Новое", "Потертое", "Сломано"});
         setupSpinner(spMaterial, new String[]{"Нет данных", "Дерево", "Металл", "Бетон", "Пластик"});
@@ -672,7 +592,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            // Собираем объект отзыва (как в AddMarkerActivity)
+
             ReviewCreate review = new ReviewCreate(
                     rate,
                     spPollution.getSelectedItemPosition() + 1,
@@ -681,11 +601,10 @@ public class MainActivity extends AppCompatActivity {
                     spSeating.getSelectedItemPosition() + 1
             );
 
-            // Если в ReviewCreate есть поле comment, добавьте:
-            // review.setComment(etComment.getText().toString());
+
 
             review.setLocationId(location.getId());
-            sendReviewToServer(review, dialog); // location.getId() отсюда убираем, он уже внутри review
+            sendReviewToServer(review, dialog);
 
         });
 
@@ -695,7 +614,7 @@ public class MainActivity extends AppCompatActivity {
         String token = prefsManager.getAuthToken();
         if (token == null) return;
 
-        // Теперь передаем только токен и объект (ID внутри объекта)
+
         Call<com.example.myapplication.models.Review> call = apiService.addReview("Bearer " + token, review);
 
         call.enqueue(new Callback<com.example.myapplication.models.Review>() {
@@ -705,8 +624,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Отзыв добавлен!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
 
-                    // Обновляем карту (чтобы подтянулись новые данные метки с отзывами)
-                    // В идеале можно запросить только одну метку по ID, но проще обновить область:
+
                     loadMarkersInVisibleRegion();
                 } else {
                     Toast.makeText(MainActivity.this, "Ошибка: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -720,14 +638,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Вспомогательный метод для спиннеров
+
     private void setupSpinner(Spinner spinner, String[] items) {
         android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
-    // Вспомогательные методы для красивого текста
+
     private String getTypeName(int typeId) {
         switch (typeId) {
             case 1: return "Скамейка";
@@ -746,16 +664,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Заглушка для удаления
+
     private void deleteLocation(int locationId, android.app.AlertDialog dialog) {
         new android.app.AlertDialog.Builder(this)
                 .setTitle("Удаление")
                 .setMessage("Вы уверены?")
                 .setPositiveButton("Да", (d, w) -> {
-                    // ТУТ ВЫЗОВ API ДЛЯ УДАЛЕНИЯ
-                    // apiService.deleteLocation(token, locationId)...
 
-                    // После успеха:
+
+
                     dialog.dismiss(); // закрываем окно деталей
                     loadMarkersInVisibleRegion(); // обновляем карту
                     Toast.makeText(this, "Удалено", Toast.LENGTH_SHORT).show();

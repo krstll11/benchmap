@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:minWidth="300dp">
 
     <!-- Заголовок -->
     <TextView
@@ -14,7 +15,8 @@
         android:text="Название места"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp"
+        android:textColor="#000000"/>
 
     <!-- Описание -->
     <TextView
@@ -30,9 +32,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Адрес"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:textColor="#555555"/>
 
-    <!-- Тип и статус в одной строке -->
+    <!-- БЛОК ФОТОГРАФИЙ -->
+    <TextView
+        android:id="@+id/tvPhotosLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Фотографии"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone" />
+
+    <HorizontalScrollView
+        android:id="@+id/scrollPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/imagesContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
+
+    <!-- Тип и статус -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +72,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Тип"/>
+            android:text="Тип"
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/tvStatus"
@@ -52,18 +81,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Статус"
-            android:gravity="end"/>
-
+            android:gravity="end"
+            android:textSize="12sp"/>
     </LinearLayout>
 
-    <!-- Разделитель -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"
-        android:layout_marginVertical="12dp"/>
+        android:layout_marginBottom="12dp"/>
 
-    <!-- Заголовок отзывов -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,7 +99,6 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
-    <!-- Контейнер для отзывов -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -83,7 +109,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
-
     </ScrollView>
 
     <!-- Кнопки -->
@@ -92,7 +117,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!-- НОВАЯ КНОПКА -->
         <Button
             android:id="@+id/btnAddReview"
             android:layout_width="0dp"
@@ -111,7 +135,8 @@
             android:text="Удалить"
             android:backgroundTint="@android:color/holo_red_dark"
             android:layout_marginEnd="4dp"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/btnClose"
@@ -119,8 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Закрыть"
-            android:backgroundTint="@android:color/darker_gray"/>
-
+            android:backgroundTint="@android:color/darker_gray"
+            android:textColor="@android:color/white"/>
     </LinearLayout>
-
 </LinearLayout>
