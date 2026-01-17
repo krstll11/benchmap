@@ -484,7 +484,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     LocationSeat createdLocation = response.body();
 
-                    Toast.makeText(MainActivity.this, "Место добавлено!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Локация добавлена!", Toast.LENGTH_SHORT).show();
 
 
                     addMarkerToMap(createdLocation);
@@ -744,7 +744,7 @@ public class MainActivity extends AppCompatActivity {
                     dialog.show();
 
                 } else {
-                    Toast.makeText(MainActivity.this, "Не удалось загрузить места", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Не удалось загрузить локации", Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -87,7 +87,7 @@ public class MyReviewsDialog extends Dialog {
 
                 String locName = review.getLocationName() != null ? review.getLocationName() : String.valueOf(review.getPollutionId());
                 // Если locationName нет, можно вывести ID или заглушку. В данном случае просто показываем что есть.
-                tvAuthor.setText("Мой отзыв (Место: " + locName + ")");
+                tvAuthor.setText("Мой отзыв (Локация: " + locName + ")");
 
                 if (tvCreatedAt != null && review.getCreatedAt() != null) {
                     tvCreatedAt.setText(review.getCreatedAt());

@@ -97,7 +97,7 @@ public class AddMarkerActivity extends AppCompatActivity {
         String address = editTextAddress.getText().toString().trim();
 
         if (name.isEmpty()) {
-            Toast.makeText(this, "Введите название места", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Введите название локации", Toast.LENGTH_SHORT).show();
             return;
         }
 

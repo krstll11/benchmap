@@ -276,7 +276,7 @@ public class LocationInfoDialog extends Dialog {
 
     private void confirmDeleteLocation() {
         new AlertDialog.Builder(getContext())
-                .setTitle("Удаление места")
+                .setTitle("Удаление локации")
                 .setMessage("Вы уверены?")
                 .setPositiveButton("Удалить", (dialog, which) -> performDelete())
                 .setNegativeButton("Отмена", null).show();

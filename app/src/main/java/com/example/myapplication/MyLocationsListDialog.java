@@ -61,7 +61,7 @@ public class MyLocationsListDialog extends Dialog {
 
         // Заголовок
         TextView title = new TextView(context);
-        title.setText("Мои места");
+        title.setText("Мои локации");
         title.setTextSize(22);
         title.setPadding(0, 0, 0, 24);
         title.setTextColor(context.getResources().getColor(android.R.color.black));
@@ -76,7 +76,7 @@ public class MyLocationsListDialog extends Dialog {
         // Заполняем список
         if (locations == null || locations.isEmpty()) {
             TextView empty = new TextView(context);
-            empty.setText("Вы еще не добавили ни одного места.");
+            empty.setText("Вы еще не добавили ни одной локации.");
             listContainer.addView(empty);
         } else {
             for (LocationSeat loc : locations) {
@@ -135,7 +135,7 @@ public class MyLocationsListDialog extends Dialog {
 
     private void confirmDelete(LocationSeat loc, View view, LinearLayout container) {
         new AlertDialog.Builder(context)
-                .setTitle("Удалить место?")
+                .setTitle("Удалить локацию?")
                 .setMessage("Вы уверены, что хотите удалить \"" + loc.getName() + "\"?")
                 .setPositiveButton("Удалить", (d, w) -> {
                     deleteLocation(loc.getId(), view, container);
@@ -150,7 +150,7 @@ public class MyLocationsListDialog extends Dialog {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(context, "Место удалено", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Локация удалена", Toast.LENGTH_SHORT).show();
                     container.removeView(view); // Удаляем строчку из списка визуально
 
                     if (listener != null) listener.onListUpdated(); // Обновляем карту
