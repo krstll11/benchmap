@@ -161,9 +161,9 @@ public class MainActivity extends AppCompatActivity {
         // слушатель
         mapView.getMap().addCameraListener(cameraListener);
 
-        // Двигаем камеру (Москва)
+        // Двигаем камеру (Нижний Тагил)
         mapView.getMap().move(
-                new CameraPosition(new Point(55.751574, 37.573856), 14.0f, 0.0f, 0.0f),
+                new CameraPosition(new Point(57.92149, 59.981156), 14.0f, 0.0f, 0.0f),
                 new Animation(Animation.Type.SMOOTH, 1f), // Анимация 1 сек
                 null
         );
