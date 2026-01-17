@@ -2,7 +2,7 @@
 <resources>
     <!-- Типы мест -->
     <string-array name="location_types">
-        <item>Скамейка</item>
+        <item>Лавочка</item>
         <item>Беседка</item>
     </string-array>
 
@@ -10,34 +10,34 @@
     <string-array name="location_statuses">
         <item>Активно</item>
         <item>На ремонте</item>
-
     </string-array>
 
     <!-- Уровень загрязнения -->
     <string-array name="pollution_levels">
-        <item>Очень чистый</item>
-        <item>Чистый</item>
-        <item>Средний</item>
-        <item>Загрязненный</item>
-        <item>Очень загрязненный</item>
+        <item>Чисто</item>
+        <item>Немного мусора</item>
+        <item>Грязно</item>
+        <item>Свалка</item>
+        <item>Переполненна урна</item>
     </string-array>
 
     <!-- Состояние -->
     <string-array name="condition_levels">
-        <item>Отличное</item>
+        <item>Идеальное</item>
         <item>Хорошее</item>
-        <item>Среднее</item>
+        <item>Удовлетворительное</item>
         <item>Плохое</item>
-        <item>Очень плохое</item>
+        <item>Авариное</item>
     </string-array>
 
     <!-- Материалы -->
     <string-array name="material_types">
         <item>Дерево</item>
         <item>Металл</item>
+        <item>Бетон</item>
         <item>Пластик</item>
+        <item>Комбинированный</item>
         <item>Камень</item>
-        <item>Смешанный</item>
     </string-array>
 
     <!-- Количество сидячих мест -->
@@ -46,10 +46,11 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
-        <item>5+</item>
-        <item>6+</item>
+        <item>5</item>
+        <item>6</item>
         <item>7</item>
         <item>8</item>
         <item>9</item>
+        <item>10</item>
     </string-array>
 </resources>
