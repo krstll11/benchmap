@@ -6,7 +6,7 @@ import com.yandex.mapkit.MapKitFactory;
 public class App extends Application {
 
 
-    private final String API_KEY = "94ac0fbb-0ad5-4441-a1cc-3fa24a521915";
+    private final String API_KEY = "86ce15a9-739d-4974-9fb5-363951c6a0eb";
 
     @Override
     public void onCreate() {

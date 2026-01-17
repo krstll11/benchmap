@@ -25,7 +25,7 @@
             android:id="@+id/textViewCoordinates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Координаты: загрузка..."
+            android:text="Меню"
             android:padding="8dp"
             android:textStyle="bold"/>
 

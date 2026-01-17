@@ -599,10 +599,10 @@ public class MainActivity extends AppCompatActivity {
         Button btnSend = view.findViewById(R.id.btnSendReview);
 
 
-        setupSpinner(spPollution, new String[]{"Нет данных", "Чисто", "Немного мусора", "Грязно"});
-        setupSpinner(spCondition, new String[]{"Нет данных", "Новое", "Потертое", "Сломано"});
-        setupSpinner(spMaterial, new String[]{"Нет данных", "Дерево", "Металл", "Бетон", "Пластик"});
-        setupSpinner(spSeating, new String[]{"Нет данных", "1 место", "2 места", "3 места", "4+ мест"});
+        setupSpinner(spPollution, getResources().getStringArray(R.array.pollution_levels));
+        setupSpinner(spCondition, getResources().getStringArray(R.array.condition_levels));
+        setupSpinner(spMaterial, getResources().getStringArray(R.array.material_types));
+        setupSpinner(spSeating, getResources().getStringArray(R.array.seating_positions));
 
         btnSend.setOnClickListener(v -> {
             int rate = (int) ratingBar.getRating();

@@ -226,7 +226,7 @@ public class LocationInfoDialog extends Dialog {
             }
 
             // 3. ЗАПОЛНЯЕМ ХАРАКТЕРИСТИКИ (Чистота, Состояние и т.д.)
-            // Это те строки, которые у вас пропали:
+
             if (tvPollution != null) tvPollution.setText(safeGetArrayItem(R.array.pollution_levels, review.getPollutionId()));
             if (tvCondition != null) tvCondition.setText(safeGetArrayItem(R.array.condition_levels, review.getConditionId()));
             if (tvMaterial != null) tvMaterial.setText(safeGetArrayItem(R.array.material_types, review.getMaterialId()));

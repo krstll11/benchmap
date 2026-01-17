@@ -43,7 +43,6 @@ public class MyReviewsDialog extends Dialog {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-
         LinearLayout mainLayout = new LinearLayout(context);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
         mainLayout.setPadding(32, 32, 32, 32);
@@ -71,20 +70,41 @@ public class MyReviewsDialog extends Dialog {
             for (Review review : reviews) {
                 View itemView = View.inflate(context, R.layout.item_review, null);
 
-
+                // 1. Находим основные поля
                 TextView tvRate = itemView.findViewById(R.id.tvRate);
                 TextView tvAuthor = itemView.findViewById(R.id.tvAuthor);
                 TextView tvCreatedAt = itemView.findViewById(R.id.tvCreatedAt);
                 View btnDelete = itemView.findViewById(R.id.btnDeleteReview);
 
+                // 2. Находим поля характеристик
+                TextView tvPollution = itemView.findViewById(R.id.tvPollution);
+                TextView tvCondition = itemView.findViewById(R.id.tvCondition);
+                TextView tvMaterial = itemView.findViewById(R.id.tvMaterial);
+                TextView tvSeating = itemView.findViewById(R.id.tvSeating);
+
+                // 3. Заполняем основные данные
                 tvRate.setText(getStarsString(review.getRate()));
 
-
-                tvAuthor.setText("Мой отзыв (Название: " + review.getLocationName() + ")"); // Или review.getLocationId() если есть
+                String locName = review.getLocationName() != null ? review.getLocationName() : String.valueOf(review.getPollutionId());
+                // Если locationName нет, можно вывести ID или заглушку. В данном случае просто показываем что есть.
+                tvAuthor.setText("Мой отзыв (Место: " + locName + ")");
 
                 if (tvCreatedAt != null && review.getCreatedAt() != null) {
                     tvCreatedAt.setText(review.getCreatedAt());
                 }
+
+                // 4. Заполняем характеристики через вспомогательный метод
+                if (tvPollution != null)
+                    tvPollution.setText(safeGetArrayItem(R.array.pollution_levels, review.getPollutionId()));
+
+                if (tvCondition != null)
+                    tvCondition.setText(safeGetArrayItem(R.array.condition_levels, review.getConditionId()));
+
+                if (tvMaterial != null)
+                    tvMaterial.setText(safeGetArrayItem(R.array.material_types, review.getMaterialId()));
+
+                if (tvSeating != null)
+                    tvSeating.setText(safeGetArrayItem(R.array.seating_positions, review.getSeatingPositions()));
 
                 // Кнопка удаления
                 if (btnDelete != null) {
@@ -135,6 +155,20 @@ public class MyReviewsDialog extends Dialog {
                 })
                 .setNegativeButton("Нет", null)
                 .show();
+    }
+
+
+    private String safeGetArrayItem(int resId, int index) {
+        try {
+            String[] items = context.getResources().getStringArray(resId);
+            // Индексы в базе начинаются с 1, а в массиве с 0 -> index - 1
+            if (index > 0 && index <= items.length) {
+                return items[index - 1];
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "-";
     }
 
     private String getStarsString(int rate) {
