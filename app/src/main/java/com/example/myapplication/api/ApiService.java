@@ -46,12 +46,17 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Path("location_id") int locationId
     );
+    @GET("reviews/user/my")
+    Call<List<Review>> getMyReviews(
+            @Header("Authorization") String token
+    );
 
     // Получить мои метки
     @GET("locations/my")
     Call<List<LocationSeat>> getMyLocations(
             @Header("Authorization") String token
     );
+
 
     // Авторизация - используем LoginRequest из models
     @FormUrlEncoded

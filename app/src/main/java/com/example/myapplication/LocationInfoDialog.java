@@ -141,40 +141,48 @@ public class LocationInfoDialog extends Dialog {
     }
 
     private void displayImages(List<Picture> pictures) {
-        imagesContainer.removeAllViews(); // Очищаем старые, если были
+        imagesContainer.removeAllViews(); // Очищаем старые
 
-        if (pictures.isEmpty()) {
-            // Можно скрыть контейнер или показать заглушку
+        // 1. УПРАВЛЕНИЕ ВИДИМОСТЬЮ
+        if (pictures == null || pictures.isEmpty()) {
+            tvPhotosLabel.setVisibility(View.GONE);
+            scrollPhotos.setVisibility(View.GONE);
             return;
+        } else {
+            // !!! ВОТ ЭТОГО НЕ ХВАТАЛО !!!
+            tvPhotosLabel.setVisibility(View.VISIBLE);
+            scrollPhotos.setVisibility(View.VISIBLE);
         }
 
         for (Picture pic : pictures) {
-            // 1. Создаем ImageView программно
             ImageView imageView = new ImageView(getContext());
 
-            // Настраиваем размеры (например, 150x150 dp)
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT);
-            params.setMargins(0, 0, 16, 0); // Отступ справа
+            // 2. РАЗМЕРЫ
+            // Лучше задать высоту явно в пикселях (например, 400px),
+            // так как в XML у скролла стоит wrap_content.
+            // Или исправьте XML (см. ниже).
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, 400);
+            params.setMargins(0, 0, 16, 0);
             imageView.setLayoutParams(params);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            // 2. Формируем ПОЛНУЮ ссылку
-            // Если pic.getUrl() возвращает "/static/...", добавляем базовый URL
-            // ВАЖНО: Используйте тот же адрес, что в RetrofitClient (http://10.0.2.2:8000)
+            // 3. ССЫЛКА
             String fullUrl = "http://10.0.2.2:8000" + pic.getUrl();
+            Log.d("IMAGE_LOAD", "Загружаю: " + fullUrl);
 
-            // 3. Загружаем через Glide
+            // 4. GLIDE
             com.bumptech.glide.Glide.with(getContext())
                     .load(fullUrl)
-                    .placeholder(R.drawable.ic_launcher_foreground) // Заглушка пока грузится
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .error(android.R.drawable.stat_notify_error) // Полезно видеть, если ошибка
                     .into(imageView);
 
-            // 4. Добавляем в контейнер
+
             imagesContainer.addView(imageView);
 
-            // Опционально: клик по картинке для открытия на весь экран
+            // Клик для открытия (опционально)
             imageView.setOnClickListener(v -> {
-                // Тут можно открыть новую Activity с большой картинкой
+                showFullScreenImage(fullUrl);
             });
         }
     }
@@ -302,5 +310,29 @@ public class LocationInfoDialog extends Dialog {
         StringBuilder stars = new StringBuilder();
         for (int i = 0; i < rate; i++) stars.append("★");
         return stars.toString();
+    }
+    private void showFullScreenImage(String imageUrl) {
+
+        Dialog fullScreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        fullScreenDialog.setContentView(R.layout.dialog_full_image);
+
+
+        ImageView ivFull = fullScreenDialog.findViewById(R.id.ivFullImage);
+        View btnClose = fullScreenDialog.findViewById(R.id.btnCloseFull);
+
+
+        com.bumptech.glide.Glide.with(getContext())
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(ivFull);
+
+
+        btnClose.setOnClickListener(v -> fullScreenDialog.dismiss());
+
+
+        ivFull.setOnClickListener(v -> fullScreenDialog.dismiss());
+
+
+        fullScreenDialog.show();
     }
 }

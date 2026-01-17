@@ -18,6 +18,7 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.view.View;
+
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.myapplication.models.Review; // Ваша модель отзыва
@@ -59,6 +60,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
+    private Button myReviewsButton;
     private Button locationButton;
     private Button myLocationsButton;
     private Button loginButton;
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
             locationButton = findViewById(R.id.locationButton);
             myLocationsButton = findViewById(R.id.myLocationsButton);
             loginButton = findViewById(R.id.loginButton);
+            myReviewsButton = findViewById(R.id.myReviewsButton);
 
 
             if (mapView == null) {
@@ -305,6 +308,33 @@ public class MainActivity extends AppCompatActivity {
             if (prefsManager.isLoggedIn()) showLogoutDialog();
             else openLoginActivity();
         });
+        myReviewsButton.setOnClickListener(v -> {
+            if (!prefsManager.isLoggedIn()) {
+                Toast.makeText(this, "Сначала войдите", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String token = prefsManager.getAuthToken();
+            apiService.getMyReviews("Bearer " + token).enqueue(new Callback<List<Review>>() {
+                @Override
+                public void onResponse(Call<List<Review>> call, Response<List<Review>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Review> reviews = response.body();
+
+                        // Открываем наш новый диалог
+                        MyReviewsDialog dialog = new MyReviewsDialog(MainActivity.this, reviews, apiService, prefsManager);
+                        dialog.show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Не удалось загрузить отзывы", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Review>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
 
@@ -341,9 +371,11 @@ public class MainActivity extends AppCompatActivity {
         if (prefsManager.isLoggedIn()) {
             loginButton.setText("Выйти");
             myLocationsButton.setEnabled(true);
+            myReviewsButton.setVisibility(View.VISIBLE); // Показываем
         } else {
             loginButton.setText("Войти");
             myLocationsButton.setEnabled(false);
+            myReviewsButton.setVisibility(View.GONE); // Скрываем
         }
     }
 
@@ -677,20 +709,53 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<LocationSeat>> call, Response<List<LocationSeat>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<LocationSeat> locations = response.body();
-                    removeAllMarkersExceptTemporary(); // Очистить карту от "чужих"
-                    for (LocationSeat loc : locations) addMarkerToMap(loc);
 
-                    if (!locations.isEmpty()) {
-                        Point p = new Point(locations.get(0).getCordX(), locations.get(0).getCordY());
-                        mapView.getMap().move(new CameraPosition(p, 12.0f, 0.0f, 0.0f),
-                                new Animation(Animation.Type.SMOOTH, 1f), null);
-                    }
+                    // Открываем диалог со списком
+                    MyLocationsListDialog dialog = new MyLocationsListDialog(
+                            MainActivity.this,
+                            locations,
+                            apiService,
+                            prefsManager,
+                            new MyLocationsListDialog.OnLocationClickListener() {
+                                @Override
+                                public void onLocationClick(LocationSeat location) {
+                                    // 1. Очищаем карту и показываем только мои (опционально)
+                                    // removeAllMarkersExceptTemporary();
+                                    // addMarkerToMap(location);
+
+                                    // 2. Перемещаем камеру к выбранному месту
+                                    mapView.getMap().move(
+                                            new com.yandex.mapkit.map.CameraPosition(
+                                                    new com.yandex.mapkit.geometry.Point(location.getCordX(), location.getCordY()),
+                                                    17.0f, 0.0f, 0.0f),
+                                            new com.yandex.mapkit.Animation(com.yandex.mapkit.Animation.Type.SMOOTH, 1f),
+                                            null
+                                    );
+
+                                    // 3. Можно сразу открыть инфо-окно этого места
+                                    showLocationInfoDialog(location);
+                                }
+
+                                @Override
+                                public void onListUpdated() {
+                                    // Если удалили место из списка, обновляем карту
+                                    loadMarkersInVisibleRegion();
+                                }
+                            }
+                    );
+                    dialog.show();
+
+                } else {
+                    Toast.makeText(MainActivity.this, "Не удалось загрузить места", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
-            public void onFailure(Call<List<LocationSeat>> call, Throwable t) { }
+            public void onFailure(Call<List<LocationSeat>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
+            }
         });
-    }
+    };
 
     @Override
     protected void onStart() {
@@ -711,5 +776,6 @@ public class MainActivity extends AppCompatActivity {
         MapKitFactory.getInstance().onStop();
         super.onStop();
     }
+
 
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Информация о месте -->
+    <LinearLayout
+        android:id="@+id/containerInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvLocationName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Название места"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:id="@+id/tvLocationAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Адрес..."
+            android:textSize="12sp"
+            android:textColor="#666666"/>
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Статус"
+            android:textSize="12sp"
+            android:textColor="#0000AA"/>
+    </LinearLayout>
+
+    <!-- Кнопка удаления -->
+    <ImageView
+        android:id="@+id/btnDeleteLocation"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:tint="@android:color/holo_red_dark"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+</LinearLayout>
