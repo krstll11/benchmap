@@ -1,7 +1,6 @@
 package com.example.myapplication.models;
 
 import com.google.gson.annotations.SerializedName;
-import java.util.Date;
 
 public class Review {
     @SerializedName("id")
@@ -28,10 +27,18 @@ public class Review {
     @SerializedName("created_at")
     private String createdAt;
 
-    @SerializedName("author")
+    // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
+
+    // 1. Принимаем строку из JSON (так как сервер шлет "author_username")
+    @SerializedName("author_username")
+    private String authorUsername;
+
+    // 2. Поле author убираем из JSON-маппинга (убираем @SerializedName),
+    // так как в JSON нет объекта "author".
     private User author;
 
-    // Getters and setters
+    // --- ГЕТТЕРЫ И СЕТТЕРЫ ---
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -56,6 +63,17 @@ public class Review {
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 
-    public User getAuthor() { return author; }
+    // --- МАГИЯ ЗДЕСЬ ---
+    // Метод создает "фейкового" пользователя на лету,
+    // чтобы ваш старый код review.getAuthor().getUsername() работал
+    public User getAuthor() {
+        if (author == null && authorUsername != null) {
+            author = new User();
+            author.setUsername(authorUsername);
+            author.setId(authorId);
+        }
+        return author;
+    }
+
     public void setAuthor(User author) { this.author = author; }
 }

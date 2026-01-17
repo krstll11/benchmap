@@ -141,42 +141,41 @@ public class LocationInfoDialog extends Dialog {
     }
 
     private void displayImages(List<Picture> pictures) {
-        if (imagesContainer == null) return;
-        imagesContainer.removeAllViews();
+        imagesContainer.removeAllViews(); // Очищаем старые, если были
 
-        if (pictures == null || pictures.isEmpty()) {
-            tvPhotosLabel.setVisibility(View.GONE);
-            scrollPhotos.setVisibility(View.GONE);
+        if (pictures.isEmpty()) {
+            // Можно скрыть контейнер или показать заглушку
             return;
         }
 
-        tvPhotosLabel.setVisibility(View.VISIBLE);
-        scrollPhotos.setVisibility(View.VISIBLE);
-
-        int sizeInDp = 150;
-        float scale = getContext().getResources().getDisplayMetrics().density;
-        int sizeInPx = (int) (sizeInDp * scale + 0.5f);
-        int marginInPx = (int) (8 * scale + 0.5f);
-
         for (Picture pic : pictures) {
+            // 1. Создаем ImageView программно
             ImageView imageView = new ImageView(getContext());
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(sizeInPx, sizeInPx);
-            params.setMargins(0, 0, marginInPx, 0);
+
+            // Настраиваем размеры (например, 150x150 dp)
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT);
+            params.setMargins(0, 0, 16, 0); // Отступ справа
             imageView.setLayoutParams(params);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            String imageUrl = pic.getFilePath();
-            if (imageUrl != null && !imageUrl.startsWith("http")) {
-                imageUrl = BASE_URL + (imageUrl.startsWith("/") ? "" : "/") + imageUrl;
-            }
-            Log.d("DEBUG_IMAGE_URL", "Glide пытается загрузить: " + imageUrl);
-            Glide.with(getContext())
-                    .load(imageUrl)
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .error(android.R.drawable.stat_notify_error)
+            // 2. Формируем ПОЛНУЮ ссылку
+            // Если pic.getUrl() возвращает "/static/...", добавляем базовый URL
+            // ВАЖНО: Используйте тот же адрес, что в RetrofitClient (http://10.0.2.2:8000)
+            String fullUrl = "http://10.0.2.2:8000" + pic.getUrl();
+
+            // 3. Загружаем через Glide
+            com.bumptech.glide.Glide.with(getContext())
+                    .load(fullUrl)
+                    .placeholder(R.drawable.ic_launcher_foreground) // Заглушка пока грузится
                     .into(imageView);
 
+            // 4. Добавляем в контейнер
             imagesContainer.addView(imageView);
+
+            // Опционально: клик по картинке для открытия на весь экран
+            imageView.setOnClickListener(v -> {
+                // Тут можно открыть новую Activity с большой картинкой
+            });
         }
     }
 

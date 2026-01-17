@@ -6,22 +6,35 @@ public class Picture {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("location_id")
-    private int locationId;
+    @SerializedName("url")
+    private String url; // Поле есть, но к нему нужен доступ
 
-    // ВАЖНО: Это имя "file_path" должно совпадать с тем, что присылает ваш Python-сервер
-    @SerializedName("file_path")
-    private String filePath;
+    @SerializedName("user_id")
+    private int userId;
 
-    public String getFilePath() {
-        return filePath;
+    // --- ВАМ НЕ ХВАТАЛО ВОТ ЭТОГО МЕТОДА ---
+    public String getUrl() {
+        return url;
+    }
+    // ---------------------------------------
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getId() {
         return id;
     }
 
-    public int getLocationId() {
-        return locationId;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

@@ -7,27 +7,36 @@
     android:padding="32dp"
     android:gravity="center">
 
-    <!-- Логотип или заголовок -->
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_launcher_foreground"
-        android:layout_marginBottom="32dp"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Вход в систему"
+        android:text="Регистрация"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="32dp"/>
 
-    <!-- Поле для имени пользователя -->
+    <!-- Поле для Email -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Поле для Имени пользователя -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Имя пользователя">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextUsername"
@@ -38,7 +47,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Поле для пароля -->
+    <!-- Поле для Пароля -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,8 +63,23 @@
             android:maxLines="1"/>
 
     </com.google.android.material.textfield.TextInputLayout>
+    <!-- Поле для подтвержения Пароля -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:endIconMode="password_toggle"
+        android:hint="Подтвердите пароль">
 
-    <!-- Прогресс бар (скрыт по умолчанию) -->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPasswordConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:maxLines="1"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -63,21 +87,20 @@
         android:visibility="gone"
         android:layout_marginBottom="24dp"/>
 
-    <!-- Кнопка входа -->
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/buttonRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Войти"
+        android:text="Зарегистрироваться"
         android:textAllCaps="false"
         android:backgroundTint="@color/colorPrimary"/>
 
-    <!-- Ссылка на регистрацию (если нужна) -->
+    <!-- Ссылка обратно на вход -->
     <TextView
-        android:id="@+id/textViewRegister"
+        android:id="@+id/textViewLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Нет аккаунта? Зарегистрироваться"
+        android:text="Уже есть аккаунт? Войти"
         android:textColor="@color/colorLink"
         android:layout_marginTop="16dp"
         android:clickable="true"

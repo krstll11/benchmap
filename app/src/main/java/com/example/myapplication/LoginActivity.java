@@ -7,12 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.api.ApiService;
 import com.example.myapplication.api.RetrofitClient;
 import com.example.myapplication.models.AuthResponse;
-import com.example.myapplication.models.User;
+import com.example.myapplication.utils.JwtUtils; // Импортируем наш новый класс
 import com.example.myapplication.utils.SharedPreferencesManager;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private Button buttonLogin;
     private ProgressBar progressBar;
+    private TextView textViewRegister;
 
     private ApiService apiService;
     private SharedPreferencesManager prefsManager;
@@ -37,11 +39,17 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
         progressBar = findViewById(R.id.progressBar);
+        textViewRegister = findViewById(R.id.textViewRegister);
 
         apiService = RetrofitClient.getApiService(this);
         prefsManager = new SharedPreferencesManager(this);
 
         buttonLogin.setOnClickListener(v -> login());
+
+        textViewRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void login() {
@@ -68,14 +76,31 @@ public class LoginActivity extends AppCompatActivity {
                     String token = authResponse.getAccessToken();
 
                     if (token != null && !token.isEmpty()) {
+                        // 1. Сохраняем токен
                         prefsManager.saveAuthToken(token);
-                        // После получения токена идем за ID пользователя
-                        getUserInfo("Bearer " + token);
+
+                        // 2. Достаем ID прямо из токена! (без запроса к серверу)
+                        int userId = JwtUtils.getUserIdFromToken(token);
+
+                        Log.d("LOGIN_DEBUG", "ID из токена: " + userId);
+
+                        if (userId != 0) {
+                            prefsManager.saveUserId(userId);
+
+                            // 3. Переходим на главный экран
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Ошибка: некорректный ID в токене", Toast.LENGTH_SHORT).show();
+                        }
+
                     } else {
                         Toast.makeText(LoginActivity.this, "Ошибка: токен пуст", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, "Ошибка авторизации", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Ошибка авторизации: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -84,31 +109,6 @@ public class LoginActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 buttonLogin.setEnabled(true);
                 Toast.makeText(LoginActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void getUserInfo(String token) {
-        apiService.getCurrentUser(token).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    User user = response.body();
-
-                    // СОХРАНЯЕМ ID через менеджер
-                    prefsManager.saveUserId(user.getId());
-
-                    Log.d("DEBUG_LOGIN", "ID сохранен: " + user.getId());
-
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Ошибка получения данных", Toast.LENGTH_SHORT).show();
             }
         });
     }

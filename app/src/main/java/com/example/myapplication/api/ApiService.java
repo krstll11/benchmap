@@ -21,6 +21,7 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     // Получить все метки в bounding box
+
     @GET("locations/")
     Call<List<LocationSeat>> getLocations(
             @Header("Authorization") String token,
@@ -66,6 +67,7 @@ public interface ApiService {
             @Header("Authorization") String token
     );
 
+
     // Регистрация
     @POST("/register")
     Call<AuthResponse> register(
@@ -90,11 +92,12 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Path("id") int reviewId
     );
-    @GET("pictures/locations/{location_id}")
+    @GET("pictures/location/{location_id}")
     Call<List<Picture>> getLocationPictures(
             @Header("Authorization") String token,
             @Path("location_id") int locationId
     );
+
 
     @GET("locations/") // Путь к вашему эндпоинту locations_router
     Call<List<LocationSeat>> getLocations(

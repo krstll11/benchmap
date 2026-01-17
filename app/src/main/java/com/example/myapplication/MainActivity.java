@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
     private PlacemarkMapObject temporaryMarker;
 
-    private final String API_KEY = "94ac0fbb-0ad5-4441-a1cc-3fa24a521915";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private static final int ADD_MARKER_REQUEST = 101;
     private static final int LOGIN_REQUEST = 102;
@@ -116,19 +115,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        try {
-            MapKitFactory.setApiKey(API_KEY);
-            MapKitFactory.initialize(this);
-        } catch (Exception e) {
-            Log.e("MAPKIT", "Ошибка инициализации MapKit", e);
-            // Если MapKit не завелся,приложение упадет дальше
-            finish();
-            return;
-        }
-
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_main);
 
 
@@ -576,7 +563,7 @@ public class MainActivity extends AppCompatActivity {
         Spinner spCondition = view.findViewById(R.id.spinnerCondition);
         Spinner spMaterial = view.findViewById(R.id.spinnerMaterial);
         Spinner spSeating = view.findViewById(R.id.spinnerSeating);
-        EditText etComment = view.findViewById(R.id.etComment);
+
         Button btnSend = view.findViewById(R.id.btnSendReview);
 
 
@@ -709,13 +696,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         MapKitFactory.getInstance().onStart();
-        mapView.onStart();
+        // Добавляем проверку на null
+        if (mapView != null) {
+            mapView.onStart();
+        }
     }
-
 
     @Override
     protected void onStop() {
-        mapView.onStop();
+        // Добавляем проверку на null
+        if (mapView != null) {
+            mapView.onStop();
+        }
         MapKitFactory.getInstance().onStop();
         super.onStop();
     }

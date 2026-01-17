@@ -71,12 +71,6 @@
             android:layout_marginBottom="16dp"/>
 
         <!-- Текстовый комментарий (если есть в API) -->
-        <EditText
-            android:id="@+id/etComment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Комментарий (необязательно)"
-            android:layout_marginBottom="16dp"/>
 
         <Button
             android:id="@+id/btnSendReview"
