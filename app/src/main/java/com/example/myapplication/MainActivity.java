@@ -719,11 +719,9 @@ public class MainActivity extends AppCompatActivity {
                             new MyLocationsListDialog.OnLocationClickListener() {
                                 @Override
                                 public void onLocationClick(LocationSeat location) {
-                                    // 1. Очищаем карту и показываем только мои (опционально)
-                                    // removeAllMarkersExceptTemporary();
-                                    // addMarkerToMap(location);
 
-                                    // 2. Перемещаем камеру к выбранному месту
+
+
                                     mapView.getMap().move(
                                             new com.yandex.mapkit.map.CameraPosition(
                                                     new com.yandex.mapkit.geometry.Point(location.getCordX(), location.getCordY()),
@@ -732,7 +730,7 @@ public class MainActivity extends AppCompatActivity {
                                             null
                                     );
 
-                                    // 3. Можно сразу открыть инфо-окно этого места
+
                                     showLocationInfoDialog(location);
                                 }
 
@@ -761,7 +759,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         MapKitFactory.getInstance().onStart();
-        // Добавляем проверку на null
+
         if (mapView != null) {
             mapView.onStart();
         }
@@ -769,7 +767,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        // Добавляем проверку на null
+
         if (mapView != null) {
             mapView.onStop();
         }

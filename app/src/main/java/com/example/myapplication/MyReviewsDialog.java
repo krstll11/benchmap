@@ -71,7 +71,7 @@ public class MyReviewsDialog extends Dialog {
             for (Review review : reviews) {
                 View itemView = View.inflate(context, R.layout.item_review, null);
 
-                // Настраиваем поля (используем логику из вашего LocationInfoDialog)
+
                 TextView tvRate = itemView.findViewById(R.id.tvRate);
                 TextView tvAuthor = itemView.findViewById(R.id.tvAuthor);
                 TextView tvCreatedAt = itemView.findViewById(R.id.tvCreatedAt);
@@ -80,7 +80,7 @@ public class MyReviewsDialog extends Dialog {
                 tvRate.setText(getStarsString(review.getRate()));
 
 
-                tvAuthor.setText("Мой отзыв (ID места: " + review.getId() + ")"); // Или review.getLocationId() если есть
+                tvAuthor.setText("Мой отзыв (Название: " + review.getLocationName() + ")"); // Или review.getLocationId() если есть
 
                 if (tvCreatedAt != null && review.getCreatedAt() != null) {
                     tvCreatedAt.setText(review.getCreatedAt());

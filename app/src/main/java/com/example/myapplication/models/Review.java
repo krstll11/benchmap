@@ -20,6 +20,9 @@ public class Review {
 
     @SerializedName("seating_positions")
     private int seatingPositions;
+    @SerializedName("location_name")
+    private String locationName;
+
 
     @SerializedName("author_id")
     private int authorId;
@@ -62,6 +65,9 @@ public class Review {
 
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public String getLocationName() { return locationName; }
+    public void setLocationName(String locationName) { this.locationName = locationName; }
+
 
     // --- МАГИЯ ЗДЕСЬ ---
     // Метод создает "фейкового" пользователя на лету,

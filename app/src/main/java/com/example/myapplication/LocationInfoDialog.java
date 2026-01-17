@@ -40,7 +40,7 @@ public class LocationInfoDialog extends Dialog {
     private HorizontalScrollView scrollPhotos;
     private Button btnDelete, btnClose, btnAddReview;
 
-    // Для эмулятора используйте 10.0.2.2 вместо localhost
+
     private static final String BASE_URL = "http://10.0.2.2:8000";
 
     public interface OnActionListener {
@@ -63,10 +63,10 @@ public class LocationInfoDialog extends Dialog {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // 1. СНАЧАЛА устанавливаем макет
+
         setContentView(R.layout.dialog_location_info);
 
-        // 2. ПОТОМ инициализируем View
+
         tvName = findViewById(R.id.tvName);
         tvDescription = findViewById(R.id.tvDescription);
         tvAddress = findViewById(R.id.tvAddress);
@@ -88,7 +88,7 @@ public class LocationInfoDialog extends Dialog {
             );
         }
 
-        // --- Заполнение данных ---
+
         tvName.setText(location.getName());
         tvDescription.setText(location.getDescription() != null && !location.getDescription().isEmpty() ?
                 location.getDescription() : "Нет описания");
@@ -149,7 +149,7 @@ public class LocationInfoDialog extends Dialog {
             scrollPhotos.setVisibility(View.GONE);
             return;
         } else {
-            // !!! ВОТ ЭТОГО НЕ ХВАТАЛО !!!
+
             tvPhotosLabel.setVisibility(View.VISIBLE);
             scrollPhotos.setVisibility(View.VISIBLE);
         }
@@ -158,9 +158,7 @@ public class LocationInfoDialog extends Dialog {
             ImageView imageView = new ImageView(getContext());
 
             // 2. РАЗМЕРЫ
-            // Лучше задать высоту явно в пикселях (например, 400px),
-            // так как в XML у скролла стоит wrap_content.
-            // Или исправьте XML (см. ниже).
+
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, 400);
             params.setMargins(0, 0, 16, 0);
             imageView.setLayoutParams(params);
@@ -180,7 +178,7 @@ public class LocationInfoDialog extends Dialog {
 
             imagesContainer.addView(imageView);
 
-            // Клик для открытия (опционально)
+            // Клик для открытия
             imageView.setOnClickListener(v -> {
                 showFullScreenImage(fullUrl);
             });

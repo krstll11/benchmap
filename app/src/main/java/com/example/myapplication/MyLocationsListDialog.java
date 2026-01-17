@@ -31,10 +31,10 @@ public class MyLocationsListDialog extends Dialog {
     private SharedPreferencesManager prefsManager;
     private OnLocationClickListener listener;
 
-    // Интерфейс для взаимодействия с MainActivity
+
     public interface OnLocationClickListener {
-        void onLocationClick(LocationSeat location); // Чтобы перелететь на карте
-        void onListUpdated(); // Чтобы обновить маркеры на карте после удаления
+        void onLocationClick(LocationSeat location);
+        void onListUpdated();
     }
 
     public MyLocationsListDialog(Context context, List<LocationSeat> locations,
@@ -93,18 +93,17 @@ public class MyLocationsListDialog extends Dialog {
                 tvAddress.setText(loc.getAddress() != null ? loc.getAddress() : "Без адреса");
                 tvStatus.setText("Статус ID: " + loc.getStatus());
 
-                // ОБРАБОТКА: Клик по месту -> Переход на карту
+
                 containerInfo.setOnClickListener(v -> {
-                    dismiss(); // Закрываем список
+                    dismiss();
                     if (listener != null) listener.onLocationClick(loc);
                 });
 
-                // ОБРАБОТКА: Клик по корзине -> Удаление
+
                 btnDelete.setOnClickListener(v -> confirmDelete(loc, itemView, listContainer));
 
                 listContainer.addView(itemView);
 
-                // Разделитель
                 View divider = new View(context);
                 divider.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 2));
                 divider.setBackgroundColor(0xFFEEEEEE); // Светло-серый
@@ -112,12 +111,12 @@ public class MyLocationsListDialog extends Dialog {
             }
         }
 
-        // Добавляем скролл в основной макет (с весом, чтобы не занимал весь экран если мало мест)
+
         LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, 0, 1.0f);
         mainLayout.addView(scrollView, scrollParams);
 
-        // Кнопка Закрыть
+
         Button btnClose = new Button(context);
         btnClose.setText("Закрыть");
         btnClose.setOnClickListener(v -> dismiss());
@@ -125,7 +124,7 @@ public class MyLocationsListDialog extends Dialog {
 
         setContentView(mainLayout);
 
-        // Растягиваем диалог по ширине
+
         if (getWindow() != null) {
             getWindow().setLayout(
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT,

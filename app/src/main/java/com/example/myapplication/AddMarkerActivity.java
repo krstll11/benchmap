@@ -28,7 +28,7 @@ public class AddMarkerActivity extends AppCompatActivity {
     // Новые поля для фото
     private Button buttonSelectImage;
     private ImageView imageViewPreview;
-    private Uri selectedImageUri = null; // Тут будем хранить ссылку на фото
+    private Uri selectedImageUri = null;
 
     private double latitude;
     private double longitude;
@@ -114,7 +114,7 @@ public class AddMarkerActivity extends AppCompatActivity {
         resultIntent.putExtra("longitude", longitude);
         resultIntent.putExtra("has_review", false);
 
-        // Если картинка выбрана, передаем её URI строкой
+
         if (selectedImageUri != null) {
             resultIntent.putExtra("image_uri", selectedImageUri.toString());
         }

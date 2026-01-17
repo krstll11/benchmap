@@ -3,19 +3,14 @@
     <!-- Типы мест -->
     <string-array name="location_types">
         <item>Скамейка</item>
-        <item>Парк</item>
-        <item>Смотровая площадка</item>
         <item>Беседка</item>
-        <item>Пикниковая зона</item>
-        <item>Другое</item>
     </string-array>
 
     <!-- Статусы -->
     <string-array name="location_statuses">
         <item>Активно</item>
         <item>На ремонте</item>
-        <item>Удалено</item>
-        <item>Временно недоступно</item>
+
     </string-array>
 
     <!-- Уровень загрязнения -->
@@ -52,5 +47,9 @@
         <item>3</item>
         <item>4</item>
         <item>5+</item>
+        <item>6+</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
     </string-array>
 </resources>
